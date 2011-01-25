@@ -1,0 +1,328 @@
+/* Copyright (c) 2011 Adiel Mittmann <adiel@inf.ufsc.br>
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>. */
+
+var project_id = "<%= @project_id %>";
+var showing_answer = false;
+
+function updateStatus()
+{
+  $.get("status", {}, function(xml){
+    $("#status-count-total").html($("total", xml).text());
+    $("#status-count-unseen").html($("unseen", xml).text());
+    $("#status-count-delayed").html($("delayed", xml).text());
+    $("#status-count-later").html($("later", xml).text());
+    $("#status-count-review").html($("review", xml).text());
+    $("#status-count-now").html($("now", xml).text());
+    $("#status-count-new").html($("new", xml).text());
+  });
+}
+
+function fetchQuestion(next)
+{
+  $.get("question", {}, function(xml){
+      if ($(xml).find("flagged").length == 1)
+        $("#flagged").html("<img src='/icons/flag_red.png'/>");
+      else
+        $("#flagged").html("");
+      $("#question").html($(xml).find("text"));
+      $(xml).find("interval").each(function(){
+          var grade = $(this).find("grade").text();
+          var value = $(this).find("value").html();
+          $("#grade-interval-" + grade).html(value);
+      });
+      if (next != undefined)
+        next();
+
+  });
+}
+
+var dict_info = {};
+
+function showButton(dict)
+{
+    var left = 0;
+//     for (dict in dict_info)
+//     {
+//         if (dict_info[dict].visible)
+//             alert($("#dict-button-" + dict).width());
+// //            left += $("#dict-button-" + dict).width();
+//     }
+//     alert(left);
+// //    $("#dictionary-list").children().each(function(){
+}
+
+function fetchDefinition(dictId)
+{
+  $.get("definition/" + dict_info[dictId].name, {}, function(xml){
+    $("#dict-dialog-" + dictId).html("<div id='dict-definition-" + dictId + "'>" + xml + '</div>');
+  });
+}
+
+function fetchAnswer()
+{
+  var dict;
+  for (dict in dict_info)
+  {
+    if (dict_info[dict].visible)
+      fetchDefinition(dict);
+  }
+}
+
+function submitGrade(grade)
+{
+  $.post(".", {"grade": grade}, function(xml){
+    hideAnswer();
+    fetchQuestion(function(){ updateStatus() });
+  });
+}
+
+function showAnswer()
+{
+  //  $("#answer").slideDown();
+  //  $("#answer").removeClass("hide");
+  fetchAnswer();
+  showing_answer = true;
+  //  $("#dialog-dict1-txt").fadeIn();
+}
+
+function hideAnswer()
+{
+  $("#answer").addClass("hide");
+  for (dict in dict_info)
+  {
+    $("#dict-definition-" + dict).fadeOut();
+  }
+  showing_answer = false;
+}
+
+function setButtonClick(id)
+{
+    $("#dict-button-" + id).click(function() {
+//        alert("huhuhuhu");
+        $.get("/projects/" + project_id + "/grade/dictionary/" + id + "/getsettings", function(xml){
+            if (xml.length != 0)
+            {
+                $("#dict-button-" + id).hide();
+                var width = parseFloat($(xml).find("width").text()) * $("#middle").width();
+                var height = parseFloat($(xml).find("height").text()) * $("#middle").height();
+                var left = $("#middle").offset().left + parseFloat($(xml).find("left").text()) * $("#middle").width();
+                var top = $("#middle").offset().top + parseFloat($(xml).find("top").text()) * $("#middle").height();
+                width = Math.round(width);
+                height = Math.round(height);
+                left = Math.round(left);
+                top = Math.round(top);
+                createDialog(id, left, top, width, height, dict_info[id].name);
+                dict_info[id].visible = true;
+                saveDialogSettings(id);
+            }
+        });
+    });
+}
+
+function addDictionary(id, name)
+{
+  $.get("/projects/" + project_id + "/grade/dictionary/" + id + "/getsettings", function(xml){
+      $("#dictionary-list").append("<li><div id='dict-button-" + id + "'>" + name + "</div></li>");
+      $("#dict-button-" + id).button().draggable({revert: "invalid"});
+      setButtonClick(id);
+      dict_info[id] = {offset: $("#dict-button-" + id).offset(), visible: false, 'name': name, 'id': id};
+      $("#answer").append("<div id='dict-dialog-" + id + "'></div>");
+      if (xml.length != 0 && $(xml).find("hidden").length == 0)
+      {
+        $("#dict-button-" + id).hide();
+          var width = parseFloat($(xml).find("width").text()) * $("#middle").width();
+          var height = parseFloat($(xml).find("height").text()) * $("#middle").height();
+          var left = $("#middle").offset().left + parseFloat($(xml).find("left").text()) * $("#middle").width();
+          var top = $("#middle").offset().top + parseFloat($(xml).find("top").text()) * $("#middle").height();
+        width = Math.round(width);
+        height = Math.round(height);
+        left = Math.round(left);
+        top = Math.round(top);
+        createDialog(id, left, top, width, height, name);
+      }
+  });
+}
+
+function refreshDictionaryList()
+{
+  $.get("dictionaries", function(xml){
+    $(xml).find("item").each(function(){
+      id = $(this).find("id").text();
+      name = $(this).find("name").text();
+      addDictionary(id, name);
+    });
+  });
+}
+
+function setDialogClose(dict)
+{
+  $("#dict-dialog-" + dict).bind("dialogclose", function(event, ui){
+//      var pos = new Object();
+//      pos.left = $("#dictionary-list").width() + $("#dictionary-list").offset().left;
+//      pos.top = $("#dictionary-list").offset().top;
+      $("#dict-button-" + dict).button("destroy");
+      $("#dict-button-" + dict).parent().replaceWith("<li><div id='dict-button-" + dict + "'>" + dict_info[dict].name + "</div></li>");
+      $("#dict-button-" + dict).button().draggable({revert: "invalid"});
+      setButtonClick(dict);
+      $("#dict-button-" + dict).show();
+//      $("#dict-button-" + dict).offset(pos);
+//      alert($("#dictionary-list").offset().top);
+//      alert(dict_info[dict].offset.top);
+//      alert($("#dictionary-list").width());
+      dict_info[dict].visible = false;
+      saveDialogSettings(dict);
+    });
+ }
+
+function undo()
+{
+  $.post("undo", {}, function(xml){
+    hideAnswer();
+    fetchQuestion();
+    updateStatus();
+  });
+}
+
+function flag()
+{
+  $.post("flag", {}, function(xml){
+  fetchQuestion();
+  });
+}
+
+function ignore()
+{
+  $.post("ignore", {}, function(xml){
+    hideAnswer();
+    fetchQuestion(function(){ updateStatus() });
+  });
+}
+
+function delay()
+{
+  $.post("delay", {}, function(xml){
+    hideAnswer();
+    fetchQuestion(function(){ updateStatus() });
+  });
+}
+
+function save()
+{
+  $.post("/projects/" + project_id + "/save", {}, function(xml){
+  });
+}
+
+function createDialog(dict, left, top, width, height, name)
+{
+    $("#dict-dialog-" + dict).dialog({draggable: false, position: [left, top], 'width': width, 'height': height, 'title': name}).parents('.ui-dialog').draggable({ handle: '.ui-dialog-titlebar', containment: $("#middle")});
+  //        $("#dict-dialog-" + dict).dialog("option", "position", [500, 500]);
+  //        $("#dict-dialog-" + dict).dialog("option", "width", 450);
+  OnDialogResize(dict);
+  onDialogDragStop(dict);
+  dict_info[dict].visible = true;
+  setDialogClose(dict);
+}
+
+function saveDialogSettings(dict)
+{
+    if (dict_info[dict].visible)
+    {
+        var pos = $("#dict-dialog-" + dict).parents('.ui-dialog').offset();
+        var width = $("#dict-dialog-" + dict).dialog("option", "width") / $("#middle").width();
+        var height = $("#dict-dialog-" + dict).dialog("option", "height") / $("#middle").height();
+        var left = (pos.left - $("#middle").offset().left) / $("#middle").width();
+        var top = (pos.top - $("#middle").offset().top) / $("#middle").height();
+        $.post("/projects/" + project_id + "/grade/dictionary/" + dict + "/savesettings/" + width + "/" + height + "/" + left + "/" + top)
+    }
+    else
+    {
+        $.post("/projects/" + project_id + "/grade/dictionary/" + dict + "/hide");
+    }
+}
+
+function OnDialogResize(dict)
+{
+        $("#dict-dialog-" + dict).bind("dialogresizestop", function(event, ui){
+            saveDialogSettings(dict);
+        });
+}
+
+function onDialogDragStop(dict)
+{
+  $("#dict-dialog-" + dict).parents('.ui-dialog').bind("dragstop", function(event, ui){
+      saveDialogSettings(dict);
+  });
+}
+
+function onDropDictionary(event, ui)
+{
+      dict = ui.draggable[0].id.substr("dict-button-".length);
+      if (dict.length > 0)
+      {
+        var left = ui.offset.left;
+        var top = ui.offset.top;
+        var a = $("#dict-button-" + dict).position();
+        var b = $("#dict-button-" + dict).offset();
+        createDialog(dict, b.left, b.top, 200, 200, dict_info[dict].name);
+        saveDialogSettings(dict);
+        $("#dict-button-" + dict).hide();
+        if (showing_answer)
+            fetchDefinition(dict);
+      }
+}
+
+
+
+$(document).ready(function(){
+  fetchQuestion();
+  fetchAnswer();
+  updateStatus();
+  refreshDictionaryList();
+  //  $("#dict1-button").button().draggable({revert: "invalid"});
+  $("#middle").droppable();
+  $("#middle").bind( "drop", function(event, ui) {
+      onDropDictionary(event, ui);
+    });
+  //  $("#dialog-dict1-txt").dialog({ resizable: false });
+  $(document).keypress(function(event){
+    var code = (event.keyCode ? event.keyCode : event.which);
+      // 117 undo
+      // 115 save
+      // 102 flag
+      // 100 delay
+      // 105 ignore
+    if (code == 117)
+      undo();
+    if (code == 115)
+      save();
+    if (code == 102)
+      flag();
+    if (code == 105)
+      ignore();
+    if (code == 100)
+      delay();
+    if (code == 32 || code == 13)
+      showAnswer();
+<%
+@grades.each_pair do |grade, desc|
+%>
+    if (code == <%= desc[:text].ord %>)
+      submitGrade('<%= grade %>');
+<%
+end
+%>
+  });
+});
+

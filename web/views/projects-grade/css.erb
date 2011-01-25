@@ -1,0 +1,213 @@
+@import url('/global.css');
+      hr{
+        border: solid 1px #043c6b;
+      }
+      /* p{ */
+      /*   text-align: center; */
+      /*   font-weight: bold; */
+      /*   color: #66a1d2; */
+      /* } */
+      span.hotkey{
+        text-decoration: underline;
+      }
+
+span.Accent{
+    color: red;
+}
+
+span.Bold{
+    font-weight: bold;
+}
+
+span.Abbrev{
+    color: green;
+}
+
+p.optional{
+    color: #505050;
+}
+p.P2, p.P1, p.P{
+    margin: 0;
+    padding: 0;
+}
+
+div#command-panel div{
+    float: left;
+}
+
+div#grades{
+    width: <%= @grades.size * 50 %>px;
+}
+div#grades div.grade{
+    display: block;
+    float: left;
+    width: 40px;
+    margin-top: 5px;
+    margin-right: 10px;
+    text-align: center;
+}
+div#grades div.button{
+    font-weight: bold;
+    font-size: 14pt;
+    font-family: 'dejavu sans', verdana, arial, sans-serif;
+    background-color: white;
+    border: solid 1px #66a1d2;;
+    width: 40px;
+    height: 30px;
+    color: black;
+    line-height: 30px;
+}
+
+div#question{
+}
+div#answer{
+    font-size: 12pt;
+}
+
+div#show-answer{
+        text-align: center;
+}
+div#show-answer div.button{
+        background-color: #66a1d2;
+        color: black;
+        border: solid 1px gray;
+    font-family: 'dejavu sans', verdana, arial, sans-serif;
+    font-size: 9pt;
+    padding: 2px;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.hide{
+    display: none;
+}
+
+div.clear{
+    clear: both;
+}
+div#top{
+    height: 170px;
+    overflow: hidden;
+}
+div#middle{
+    margin: 0px;
+    padding: 0px;
+    position: fixed;
+    top: 190px;
+    bottom: 50px;
+    width: 98%;
+    min-height: 100px;
+    overflow: hidden;
+}
+div#bottom{
+    position: absolute;
+    bottom: 0px;
+    height: 50px;
+}
+
+div#command-bar-left, div#grades, div#command-bar-right{
+    float: left;
+}
+div#command-bar-left div{
+    float: left;
+    padding-top: 20px;
+}
+div#command-bar-right div{
+    float: right;
+    padding-top: 20px;
+}
+div#command-bar-left{
+    width: 20%;
+}
+div#command-bar-right{
+    width: 20%;
+}
+div#command-bar-right div, div#command-bar-left div{
+   cursor: pointer;
+   margin-left: 2px;
+   margin-right: 2px;
+}
+div#grades{
+    width: 60%;
+}
+div#grades > div.center{
+    margin-left: auto;
+    margin-right: auto;
+    width: <%= @grades.size * 50 %>px;
+}
+
+div#status-bar{
+    height: 20px;
+    font-size: 9pt;
+    color: #66a1d2;
+    text-align: center;
+    font-style: italic;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+div#status-bar > div{
+    float: left;
+    width: 14.28%;
+    text-align: center;
+}
+div#command-bar{
+    height: 50px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+div#card{
+    height: 100px;
+    border: solid 1px gray;
+    background-color: white;
+    color: black;
+    font-family: 'linux libertine';
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    color: #000570;
+    font-size: 25px;
+    text-align: center;
+}
+div#question{
+   text-align: center;
+   display: table-cell;
+   vertical-align: middle;
+   text-align: center;
+}
+div#question-wrapper{
+   margin-left: 10%;
+   width: 80%;
+   display: table;
+   height: 70px;
+}
+
+div#dictionary-list div{
+ 
+}
+div#answer{
+    display: none;
+}
+div#flagged{
+    position: static;
+    float: right;
+    width: 20px;
+    margin-right: 5px;
+    text-align: right;
+}
+div.grade-interval{
+   font-style: italic;
+   font-size: 8pt;
+}
+ul#dictionary-list li{
+    float: left;
+}
+ul#dictionary-list{
+    list-style-type: none;
+    padding-left: 0;
+}
+div.button{
+    cursor: pointer;
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Megamneme</title>
+    <link rel="stylesheet" type="text/css" href="grade.css"/>
+    <link rel="stylesheet" type="text/css" href="/jquery/css/smoothness/jquery-ui-1.8.6.custom.css"/>
+    <script type="text/javascript" src="/jquery/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="/jquery/js/jquery-ui-1.8.6.custom.min.js"></script>
+    <script type="text/javascript" src="grade.js"></script>
+  </head>
+  <body>
+    <div id="top">
+      <div id="status-bar">
+<%
+[
+  ['Total', 'total'],
+  ['Unseen', 'unseen'],
+  ['Delayed', 'delayed'],
+  ['Learned', 'later'],
+  ['Review', 'review'],
+  ['Now', 'now'],
+  ['New', 'new'],
+].each do |item|
+%>
+        <div class="item" id="status-<%= item.last %>">
+          <span class="name"><%= item.first %>: </span>
+          <span class="count" id="status-count-<%= item.last %>"></span>
+        </div>
+<%
+end
+%>
+      </div>
+      <div class="clear"/>
+      <div id="command-bar">
+        <div id="command-bar-left">
+          <div id="command-save" onclick="save();" title="Save (S)"><img src="/icons/disk.png" alt="Save"/></div>
+          <div id="command-undo" onclick="undo();" title="Undo (U)"><img src="/icons/arrow_undo.png" alt="Undo"/></div>
+        </div>
+        <div id="grades">
+        <div class="center">
+<%
+@grades.each_pair do |grade, desc|
+%>
+          <div class="grade" id="grade-<%= desc[:text] %>">
+            <div class="button" onclick="submitGrade('<%= desc[:text] %>');" title="Grade <%= desc[:text] %> (<%= desc[:text] %>)"><%= desc[:text] %></div>
+            <div class="grade-interval" id="grade-interval-<%= desc[:text] %>"></div>
+          </div>
+<%
+end
+%>
+        </div>
+        </div>
+        <div id="command-bar-right">
+          <div id="command-ignore" onclick="ignore();" title="Ignore (I)"><img src="/icons/error.png" alt="Ignore"/></div>
+          <div id="command-delay" onclick="delay();" title="Delay (D)"><img src="/icons/clock.png" alt="Delay"/></div>
+          <div id="command-flag" onclick="flag();" title="Flag (F)"><img src="/icons/flag_red.png" alt="Flag"/></div>
+        </div>
+      </div>
+      <div class="clear"/>
+      <div id="card">
+        <div id="flagged"/>
+        <div id="question-wrapper">
+          <div id="question"/>
+        </div>
+        <div id="show-answer">
+          <div id="show-answer-button" class="button" onclick="showAnswer();">Show answer</div>
+        </div>
+      </div>
+    </div>
+    <div id="middle">
+      <div id="answer"></div>
+    </div>
+    <div id="bottom">
+      <ul id="dictionary-list"/>
+    </div>
+  </body>
+</html>
