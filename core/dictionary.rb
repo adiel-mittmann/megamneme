@@ -86,6 +86,8 @@ class Dictionary
       end
     end
 
+    GC.start
+
 #    puts @words
 
   end
@@ -138,7 +140,7 @@ class Dictionary
             if defs == nil
               defs = (entry.definitions[category] = [])
             end
-            defs << Definition.new(lemma, index, category, child.first_element_child)
+            defs << Definition.new(lemma, index, category, child.first_element_child.to_xml)
           }
         }
       end

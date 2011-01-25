@@ -246,7 +246,7 @@ class Web < Sinatra::Base
     dictionary = @drill.project.dictionaries[params[:name]]
     name = params[:name]
     html += '<div id="haha-dialog-' + name.gsub(".", "-") + '" title="' + name + '">'
-    defs = dictionary.findDefinitions(@drill.card.word, nil)
+    defs = dictionary.find_definitions(@drill.card.word, nil)
     if defs != nil
       defs.each do
         |item|

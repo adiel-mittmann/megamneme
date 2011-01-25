@@ -17,6 +17,7 @@
 
 require 'deck'
 require 'dictionary'
+require 'xml-dictionary'
 require 'msdic'
 require 'file-manager'
 require 'vocabulary'
@@ -77,8 +78,8 @@ class Project
         puts 'DICTIONARY'
         puts filename
         @dictionaries[filename] = Msdict.new(filename)
-      else
-        @dictionaries[filename] = Dictionary.new(filename)
+      elsif filename =~ /.*\.xml/
+        @dictionaries[filename] = XmlDictionary.new(FileManager.dictionary(filename))
       end
     end
 
