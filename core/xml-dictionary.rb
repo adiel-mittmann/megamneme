@@ -46,7 +46,7 @@ class XmlDictionary
   def initialize(file_name)
     file = File.new(file_name, 'rb')
     text = file.read()
-    @xml = Nokogiri::XML(text, nil, 'utf-8', Nokogiri::XML::ParseOptions::NONET)
+    @xml = Nokogiri::XML(text, nil, 'utf-8')
   end
 
 end

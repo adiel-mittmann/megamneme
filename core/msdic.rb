@@ -399,7 +399,7 @@ class Msdict
     @pdb = PdbFile.new('/home/adiel/big/megamneme/dict/OxfPocketRussEng_j_1_1.pdb')
     @pdb.parse
   end
-  def findDefinitions(lemma, category)
+  def find_definitions(lemma, category)
     return [Definition.new(lemma, nil, nil, @pdb.search(lemma))]
   end
 end

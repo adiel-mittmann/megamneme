@@ -23,13 +23,38 @@ class TeiDictionary < XmlDictionary
 
   public
 
+  class Definition
+    attr_accessor :lemma, :index, :category, :content
+    def initialize(lemma, index, category, content)
+      @lemma = lemma
+      @index = index
+      @category = category
+      @content = content
+    end
+    def to_s
+      @lemma.to_s + '(' + @index.to_s + '), ' + @category.to_s + ': ' + @content
+    end
+  end
+
   def find_definitions(lemma, category)
     defs = []
     entries = @xml.xpath('/TEI.2/text/body/div0/entry[@key=$key]', nil, {:key => lemma})
     if entries.size == 0
-      entries = @xml.xpath('/TEI.2/text/body/div0/superEntry[entry[@key=$key]]', nil, {:key => lemma + '1'})
-      puts entries
+      entries = @xml.xpath('/TEI.2/text/body/div0/superEntry[entry[@key=$key]]/entry', nil, {:key => lemma + '1'})
     end
+    entries.each do
+      |entry|
+      puts entry
+      puts @xslt.transform(entry).to_xml({:encoding => 'utf-8'})
+    end
+    []
+  end
+
+  def initialize(file_name)
+    file = File.new(file_name, 'rb')
+    text = file.read()
+    @xml = Nokogiri::XML(text, nil, 'utf-8', Nokogiri::XML::ParseOptions::NONET)
+    @xslt = Nokogiri::XSLT(File.read('tei-to-html.xsl'))
   end
 
 end

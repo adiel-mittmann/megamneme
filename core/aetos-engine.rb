@@ -128,7 +128,7 @@ class AetosEngine < Engine
       if i == 2 && int < one_day
         int = one_day
       elsif int <= analysis[i - 1][:interval]
-        int = analysis[i - 1][:interval] + 1
+        int = analysis[i - 1][:interval] + 1 * one_day
       end
       analysis[i] = {:destiny => :later, :interval => int}
     end

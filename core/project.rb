@@ -79,6 +79,7 @@ class Project
         puts filename
         @dictionaries[filename] = Msdict.new(filename)
       elsif filename =~ /.*\.xml/
+        puts filename
         @dictionaries[filename] = XmlDictionary.new(FileManager.dictionary(filename))
       end
     end
