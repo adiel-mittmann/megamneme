@@ -90,7 +90,18 @@ class Engine
     if analysis[grade][:interval] == 0
       card.future = nil
     else
-      card.future = Time.new + analysis[grade][:interval]
+      puts 'ANALYSIS'
+      puts analysis[grade]
+      if analysis[grade][:unit] == nil
+        card.future = Time.new + analysis[grade][:interval]
+      else
+        case analysis[grade][:unit]
+        when :second
+          card.future = Time.new + analysis[grade][:interval]
+        when :day
+          card.future = (Time.new + analysis[grade][:interval]).to_date.to_time + 5 * 60 * 60
+        end
+      end
     end
     puts card.future
     card.data.merge!(analysis[grade][:data])

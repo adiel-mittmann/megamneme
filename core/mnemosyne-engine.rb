@@ -286,8 +286,11 @@ class MnemosyneEngine < QueueEngine
     end
 
     analysis = {}
-    (0..5).each do |grade|
+    (0..1).each do |grade|
       analysis[grade] = {:interval => interval[grade], :destiny => destiny[grade], :data => data[grade]}
+    end
+    (2..5).each do |grade|
+      analysis[grade] = {:interval => interval[grade], :destiny => destiny[grade], :data => data[grade], :unit => :day}
     end
 
     return analysis
