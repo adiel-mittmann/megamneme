@@ -130,7 +130,7 @@ class AetosEngine < Engine
       elsif int <= analysis[i - 1][:interval]
         int = analysis[i - 1][:interval] + 1 * one_day
       end
-      analysis[i] = {:destiny => :later, :interval => int}
+      analysis[i] = {:destiny => :later, :interval => int, :unit => :day}
     end
     (0..1).each do |grade|
       analysis[grade][:data] = {}
