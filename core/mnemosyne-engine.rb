@@ -257,21 +257,21 @@ class MnemosyneEngine < QueueEngine
 
         (2..3).each do |grade|
           if actual_interval <= scheduled_interval
-            interval[grade] = actual_interval * card[:easiness]
+            interval[grade] = actual_interval * data[grade][:easiness]
           else
             interval[grade] = scheduled_interval
           end
         end
 
         (4..4).each do |grade|
-          interval[grade] = actual_interval * card[:easiness]
+          interval[grade] = actual_interval * data[grade][:easiness]
         end
 
         (5..5).each do |grade|
           if actual_interval < scheduled_interval
             interval[grade] = scheduled_interval
           else
-            interval[grade] = actual_interval * card[:easiness]
+            interval[grade] = actual_interval * data[grade][:easiness]
           end
         end
 
