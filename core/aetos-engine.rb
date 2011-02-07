@@ -69,7 +69,8 @@ class AetosEngine < Engine
     end
 
     @deck.now.refresh(Time.new)
-    if @deck.now.size > 1 || (@deck.now.size == 1 && doomed)
+#    if @deck.now.size > 1 || (@deck.now.size == 1 && doomed)
+    if @deck.now.size > 0
       odds[:now] = doomed ? 1.0 : logarithmic(0.10, 1.00, 10, @deck.now.size);
       doomed = false
     end
