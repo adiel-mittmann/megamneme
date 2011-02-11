@@ -54,6 +54,8 @@ class Drill
 
     card = card()
 
+    @deck.remove_card_todo
+
 #    card.data = @engine.decode_card_attributes(card.data)
     analysis = @engine.analyze_card(card)
 

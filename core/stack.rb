@@ -81,6 +81,7 @@ class Stack
   def pickByIndex(i)
     card = remove(i)
     log(:remove, {:card => card.copy, :index => i, :rand => @next_rand})
+    puts 'removed card: ' + card.to_s
     @next_rand = rand
     card
   end

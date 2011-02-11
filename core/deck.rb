@@ -244,12 +244,15 @@ class Deck
     moveCurrentCard(int[grade][:destiny])
   end
 
-  def move_card(destiny)
+  def remove_card_todo
     if @current_index == nil
       @vocabulary.remove_next
     else
       @current_origin.pickByIndex(@current_index);
     end
+  end
+
+  def move_card(destiny)
     moveCurrentCard(destiny)
   end
 
